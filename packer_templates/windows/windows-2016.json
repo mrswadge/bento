@@ -159,13 +159,27 @@
     [
       {
         "keep_input_artifact": true,
-        "output": "{{ user `template` }}-{{.Provider}}.box",
+        "output": "{{ user `build_directory` }}/{{user `box_basename`}}.{{.Provider}}.box",
         "type": "vagrant",
         "vagrantfile_template": "{{template_dir}}/vagrantfile-windows.template"
       }
     ]
   ],
   "provisioners": [
+    {
+      "cookbook_paths": [
+        "{{template_dir}}/cookbooks"
+      ],
+      "guest_os_type": "windows",
+      "run_list": [
+        "packer::updates"
+      ],
+      "type": "chef-solo"
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "120m"
+    },
     {
       "cookbook_paths": [
         "{{template_dir}}/cookbooks"
@@ -220,6 +234,7 @@
     }
   ],
   "variables": {
+    "box_basename": "windows-2016-standard",
     "build_directory": "../../builds",
     "cpus": "2",
     "disk_size": "40000",
