@@ -8,6 +8,6 @@ edition="datacenter"
 onerror="cleanup"
 for version in 2012r2 2016 2019; do
     box_basename="${platform}-${version}-${edition}_v${tstamp}"
-    packer build -only=virtualbox-iso "-on-error=${onerror}" -var "box_basename=${box_basename}" -var "cpus=4" "${platform}-${version}.json"
+    packer build -force -only=virtualbox-iso "-on-error=${onerror}" -var "box_basename=${box_basename}" -var "cpus=4" "${platform}-${version}.json"
 done
 popd
