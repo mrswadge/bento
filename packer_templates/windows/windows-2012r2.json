@@ -174,7 +174,8 @@
       "run_list": [
         "packer::updates"
       ],
-      "type": "chef-solo"
+      "type": "chef-solo",
+      "version": "{{ user `chef_version` }}"
     },
     {
       "type": "windows-restart",
@@ -193,7 +194,8 @@
         "packer::configure_power",
         "packer::disable_screensaver"
       ],
-      "type": "chef-solo"
+      "type": "chef-solo",
+      "version": "{{ user `chef_version` }}"
     },
     {
       "type": "windows-restart"
@@ -210,7 +212,8 @@
         "packer::enable_remote_desktop",
         "packer::ui_tweaks"
       ],
-      "type": "chef-solo"
+      "type": "chef-solo",
+      "version": "{{ user `chef_version` }}"
     },
     {
       "type": "windows-restart"
@@ -224,7 +227,8 @@
         "packer::cleanup",
         "packer::defrag"
       ],
-      "type": "chef-solo"
+      "type": "chef-solo",
+      "version": "{{ user `chef_version` }}"
     },
     {
       "elevated_password": "vagrant",
@@ -237,6 +241,7 @@
     "box_basename": "windows-2012r2-standard",
     "build_directory": "../../builds",
     "cpus": "2",
+    "chef_version": "17",
     "disk_size": "40000",
     "floppy_dir": "{{template_dir}}/answer_files",
     "guest_additions_mode": "attach",
