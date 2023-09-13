@@ -12,8 +12,8 @@ if windows_nt_version == '10.0.17763' # 2019
     action :install
   end
   # This is basically a service pack and we should install it to fix a giant pile of bugs
-  msu_package '2023-03 Cumulative Update for Windows Server 2019 for x64-based Systems (KB5023702)' do
-    source 'https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2023/03/windows10.0-kb5023702-x64_25c0d04726b1f92c46e76d371ca58875051506c5.msu'
+  msu_package '2023-08 Cumulative Update for Windows Server 2019 for x64-based Systems (KB5029247)' do
+    source 'https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2023/08/windows10.0-kb5029247-x64_9894baa6db2836dc3ddea322bc3128b8653005fc.msu'
     action :install
     timeout 7200
   end
@@ -24,8 +24,8 @@ elsif windows_nt_version == '10.0.14393' # 2016
     timeout 7200
   end
   # This is basically a service pack and we should install it to fix a giant pile of bugs
-  msu_package '2023-03 Cumulative Update for Windows Server 2016 for x64-based Systems (KB5023697)' do
-    source 'https://catalog.s.download.windowsupdate.com/d/msdownload/update/software/secu/2023/03/windows10.0-kb5023697-x64_0cde92f5aaba06c1a1bfd64615010c90180dcb86.msu'
+  msu_package '2023-08 Cumulative Update for Windows Server 2016 for x64-based Systems (KB5029242)' do
+    source 'https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2023/08/windows10.0-kb5029242-x64_de925ba31c7c1e38ce8b97da441784d2276d26b1.msu'
     action :install
     timeout 7200
   end
@@ -34,12 +34,12 @@ elsif windows_nt_version == '6.3.9600' # 2012r2
     source 'https://download.microsoft.com/download/6/F/5/6F5FF66C-6775-42B0-86C4-47D41F2DA187/Win8.1AndW2K12R2-KB3191564-x64.msu'
     action :install
   end
-  msu_package '2023-03 Servicing Stack Update for Windows Server 2012 R2 for x64-based Systems (KB5023790)' do
-    source 'https://catalog.s.download.windowsupdate.com/d/msdownload/update/software/secu/2023/03/windows8.1-kb5023790-x64_2bf6f0bb4f46f08e15a4223831d545cd125d8ae6.msu'
+  msu_package '2023-08 Servicing Stack Update for Windows Server 2012 R2 for x64-based Systems (KB5029368)' do
+    source 'https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2023/07/windows8.1-kb5029368-x64_2afab9a8d12ca38305c593ed3cbb7b077885aebd.msu'
     action :install
   end
-  msu_package '2022-10 Security Monthly Quality Rollup for Windows Server 2012 R2 for x64-based Systems (KB5018474)' do
-    source 'https://catalog.s.download.windowsupdate.com/d/msdownload/update/software/secu/2022/10/windows8.1-kb5018474-x64_04d5097ac019afc70c130f027942a7f0ee9bf890.msu'
+  msu_package '2022-11 Security Monthly Quality Rollup for Windows Server 2012 R2 for x64-based Systems (KB5020023)' do
+    source 'https://catalog.s.download.windowsupdate.com/d/msdownload/update/software/secu/2022/11/windows8.1-kb5020023-x64_bac631bd04b0ed264983ca415368a38aff5e323f.msu'
     action :install
   end
 elsif windows_nt_version == '6.2.9200' # 2012
