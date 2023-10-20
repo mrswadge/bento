@@ -1,6 +1,6 @@
-require "bento/common"
-require "mixlib/shellout" unless defined?(Mixlib::ShellOut)
-require "erb" unless defined?(Erb)
+require 'bento/common'
+require 'mixlib/shellout' unless defined?(Mixlib::ShellOut)
+require 'erb' unless defined?(Erb)
 
 class TestRunner
   include Common
@@ -10,11 +10,11 @@ class TestRunner
   def initialize(opts)
     @debug = opts.debug
     @no_shared = opts.no_shared
-    @provisioner = opts.provisioner.nil? ? "shell" : opts.provisioner
+    @provisioner = opts.provisioner.nil? ? 'shell' : opts.provisioner
   end
 
   def start
-    banner("Starting testing...")
+    banner('Starting testing...')
     time = Benchmark.measure do
       metadata_files.each do |metadata_file|
         destroy_all_bento
@@ -33,28 +33,35 @@ class TestRunner
     boxes = cmd.stdout.split("\n")
 
     boxes.each do |box|
-      b = box.split(" ")
-      rm_cmd = Mixlib::ShellOut.new("vagrant box remove --force #{b[0]} --provider #{b[1].to_s.gsub(/(,|\()/, "")}")
-      banner("Removing #{b[0]} for provider #{b[1].to_s.gsub(/(,|\()/, "")}")
+      b = box.split(' ')
+      rm_cmd = Mixlib::ShellOut.new("vagrant box remove --force #{b[0]} --provider #{b[1].to_s.gsub(/(,|\()/, '')}")
+      banner("Removing #{b[0]} for provider #{b[1].to_s.gsub(/(,|\()/, '')}")
       rm_cmd.run_command
     end
   end
 
   def test_box(md_json)
+    bento_dir = Dir.pwd
+    temp_dir = "#{bento_dir}/builds/test-kitchen"
+    Dir.mkdir(temp_dir) unless Dir.exist?(temp_dir)
     md = box_metadata(md_json)
-    @boxname = md["name"]
-    @providers = md["providers"]
+    @boxname = md['name']
+    @providers = md['providers']
     @share_disabled = no_shared || /(bsd|opensuse)/.match(boxname) ? true : false
 
-    dir = "#{File.expand_path("../../", File.dirname(__FILE__))}/templates"
-    %w{.kitchen.yml bootstrap.sh}.each do |file|
-      t = file =~ /kitchen/ ? "kitchen.yml.erb" : "#{file}.erb"
-      erb = ERB.new(File.read(dir + "/#{t}"), nil, "-").result(binding)
-      File.open(file, "w") { |f| f.puts erb }
+    dir = "#{File.expand_path('../../', File.dirname(__FILE__))}/lib/bento/test_templates"
+    %w(kitchen.yml bootstrap.sh).each do |file|
+      t = file =~ /kitchen/ ? 'kitchen.yml.erb' : "#{file}.erb"
+      erb = ERB.new(File.read(dir + "/#{t}"), trim_mode: '-').result(binding)
+      File.open("#{temp_dir}/#{file}", 'w') { |f| f.puts erb }
     end
 
-    test = Mixlib::ShellOut.new("kitchen test", timeout: 900, live_stream: STDOUT)
+    Dir.chdir(temp_dir)
+    banner("Test kitchen file located in #{temp_dir}")
+    test = Mixlib::ShellOut.new('kitchen test', timeout: 900, live_stream: STDOUT)
     test.run_command
     test.error!
+    Dir.chdir(bento_dir)
+    FileUtils.rm_rf(temp_dir)
   end
 end
