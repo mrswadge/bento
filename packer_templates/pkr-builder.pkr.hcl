@@ -33,6 +33,10 @@ packer {
 }
 
 locals {
+  wmf = var.wmf == null ? (
+    var.is_windows ? [ "${path.root}/scripts/windows/wmf.ps1" ] : null
+  ) : var.wmf
+
   scripts = var.scripts == null ? (
     var.is_windows ? [
       "${path.root}/scripts/windows/provision.ps1",
@@ -177,6 +181,17 @@ build {
     expect_disconnect = true
     scripts           = local.scripts
     except            = var.is_windows ? local.source_names : null
+  }
+
+  # Windows Management Framework
+  provisioner "powershell" {
+    elevated_password = "vagrant"
+    elevated_user     = "vagrant"
+    scripts           = local.wmf
+    except            = var.is_windows ? null : local.source_names
+  }
+  provisioner "windows-restart" {
+    except = var.is_windows ? null : local.source_names
   }
 
   # Windows Updates and scripts
