@@ -4,7 +4,7 @@ pushd "$SCRIPTPATH"
 tstamp=$(date '+%Y%m%d')
 platform="windows"
 disk_size="131072"
-memory="16384"
+memory="4096"
 onerror="cleanup"
 vm_values=""
 
