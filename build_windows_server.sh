@@ -67,6 +67,8 @@ for version in "${values[@]}"; do
   box_log="build-${platform}-${version}.log"
   box_basename="${platform}/${platform}-${version}-x86_64"
   echo "Building $box_basename with packer. You can follow the log in ${box_log}."
-  packer build -force -only=virtualbox-iso.vm "-on-error=${onerror}" -var-file="os_pkrvars/${box_basename}.pkrvars.hcl" -var "cpus=4" -var "memory=${memory}" -var "disk_size=${disk_size}" ./packer_templates > "${box_log}" 2>&1
+  packer build -force -only=virtualbox-iso.vm "-on-error=${onerror}" -var-file="os_pkrvars/${box_basename}.pkrvars.hcl" -var "cpus=4" -var "memory=${memory}" -var "disk_size=${disk_size}" ./packer_templates > "${box_log}" 2>&1 &
 done
+
+wait
 popd
