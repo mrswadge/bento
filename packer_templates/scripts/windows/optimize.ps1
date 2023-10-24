@@ -129,7 +129,7 @@ Optimize-Volume -DriveLetter C
 $osVersion = [System.Environment]::OSVersion
 
 if ($osVersion.Version.Major -eq 6 -and $osVersion.Version.Minor -eq 3 -and $osVersion.Version.Build -eq 9600) {
-    Write-Host "You are running Windows Server 2012 R2. Skipping compact.exe as it is not supported on this version of Windows."
+    compact.exe /C /S:C:\ /I /F /Q
 } else {
     compact.exe /compactOS:always
 }
