@@ -347,11 +347,6 @@ variable "vm_name" {
 }
 
 # builder common block
-variable "wmf" {
-  type    = list(string)
-  default = null
-}
-
 variable "scripts" {
   type    = list(string)
   default = null

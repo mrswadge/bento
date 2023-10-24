@@ -33,10 +33,6 @@ packer {
 }
 
 locals {
-  wmf = var.wmf == null ? (
-    var.is_windows ? [ "${path.root}/scripts/windows/wmf.ps1" ] : null
-  ) : var.wmf
-
   scripts = var.scripts == null ? (
     var.is_windows ? [
       "${path.root}/scripts/windows/provision.ps1",
@@ -187,7 +183,9 @@ build {
   provisioner "powershell" {
     elevated_password = "vagrant"
     elevated_user     = "vagrant"
-    scripts           = local.wmf
+    scripts           = [
+      "${path.root}/scripts/windows/wmf.ps1"
+    ]
     except            = var.is_windows ? null : local.source_names
   }
   provisioner "windows-restart" {
