@@ -96,6 +96,10 @@ Stop-ServiceForReal BITS               # Background Intelligent Transfer Service
 # NB to analyse the used space use: dism.exe /Online /Cleanup-Image /AnalyzeComponentStore
 # see https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/clean-up-the-winsxs-folder
 Write-Host 'Cleaning up the WinSxS folder...'
+
+# dism.exe can exit "Error 3" if the Temp\1 folder is missing, so ensure it's created.
+New-Item -Path "$env:LOCALAPPDATA\Temp\1" -ItemType Directory -Force | Out-Null
+
 dism.exe /Online /Quiet /Cleanup-Image /StartComponentCleanup /ResetBase
 if ($LASTEXITCODE) {
     throw "Failed with Exit Code $LASTEXITCODE"

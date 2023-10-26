@@ -129,7 +129,7 @@ Optimize-Volume -DriveLetter C
 $osVersion = [System.Environment]::OSVersion
 
 if ($osVersion.Version.Major -eq 6 -and $osVersion.Version.Minor -eq 3 -and $osVersion.Version.Build -eq 9600) {
-    compact.exe /C /S:C:\ /I /F /Q
+    Write-Host "Skipping compacting the OS drive as it is Windows Server 2012 R2."
 } else {
     compact.exe /compactOS:always
 }

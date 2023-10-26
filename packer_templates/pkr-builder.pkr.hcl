@@ -179,12 +179,12 @@ build {
     except            = var.is_windows ? local.source_names : null
   }
 
-  # Windows Management Framework
+  # Baseline updates and WMF 5.1 for 2012 R2
   provisioner "powershell" {
     elevated_password = "vagrant"
     elevated_user     = "vagrant"
     scripts           = [
-      "${path.root}/scripts/windows/wmf.ps1"
+      "${path.root}/scripts/windows/baseline.ps1"
     ]
     except            = var.is_windows ? null : local.source_names
   }
