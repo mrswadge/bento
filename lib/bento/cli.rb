@@ -6,14 +6,20 @@ require 'bento/runner'
 require 'bento/normalize'
 require 'bento/test'
 require 'bento/upload'
+require 'bento/version'
 
 class Options
   NAME = File.basename($PROGRAM_NAME).freeze
 
   def self.parse(args)
+    arch = if RbConfig::CONFIG['host_cpu'] == 'arm64'
+             'aarch64'
+           else
+             RbConfig::CONFIG['host_cpu']
+           end
     not_buildable = YAML.load(File.read('builds.yml'))['do_not_build']
     options = OpenStruct.new
-    options.template_files = calculate_templates("os_pkrvars/**/*-#{RbConfig::CONFIG['host_cpu']}.pkrvars.hcl")
+    options.template_files = calculate_templates("os_pkrvars/**/*-#{arch}.pkrvars.hcl")
     not_buildable.each do |os|
       options.template_files.delete_if { |template| template.include?(os) }
     end
@@ -28,6 +34,7 @@ class Options
         normalize    :   normalize one or more templates
         test         :   test one or more builds with kitchen
         upload       :   upload and release one or more builds to Vagrant Cloud
+        version      :   prints the version of #{NAME}
       COMMANDS
     end
 
@@ -51,6 +58,13 @@ class Options
         parser: OptionParser.new {},
         argv: proc { |_opts|
           puts global
+          exit(0)
+        },
+      },
+      version: {
+        parser: OptionParser.new {},
+        argv: proc { |_opts|
+          puts Bento::VERSION
           exit(0)
         },
       },
@@ -83,7 +97,7 @@ class Options
             options.debug = opt
           end
 
-          opts.on('-o BUILDS', '--only BUILDS', 'Only build some Packer builds (ex: parallels-iso,virtualbox-iso,vmware-iso)') do |opt|
+          opts.on('-o BUILDS', '--only BUILDS', 'Only build some Packer builds (ex: parallels-iso.vm,virtualbox-iso.vm,vmware-iso.vm)') do |opt|
             options.only = opt
           end
 

@@ -17,7 +17,7 @@ class BuildRunner
     @dry_run = opts.dry_run
     @metadata_only = opts.metadata_only
     @debug = opts.debug
-    @only = opts.only ||= 'parallels-iso.vm,virtualbox-iso.vm,vmware-iso.vm'
+    @only = opts.only ||= nil
     @except = opts.except
     @mirror = opts.mirror
     @headed = opts.headed ||= false
@@ -64,8 +64,8 @@ class BuildRunner
       time = Benchmark.measure do
         cmd.run_command
       end
-      if Dir.glob("../../builds/*.box").empty?
-        banner("Not writing metadata file since no boxes exist")
+      if Dir.glob("../../builds/#{template.split('-')[0...-1].join('-')}*-#{template.split('-')[-1]}.*.box").empty?
+        banner('Not writing metadata file since no boxes exist')
       else
         write_final_metadata(template, time.real.ceil)
       end
@@ -87,7 +87,7 @@ class BuildRunner
     var_files.each do |var_file|
       cmd.insert(5, "-var-file=#{var_file}") if File.exist?(var_file)
     end if var_files
-    cmd.insert(4, "-only=#{only}")
+    cmd.insert(4, "-only=#{only}") if only
     cmd.insert(4, "-except=#{except}") if except
     # Build the command line in the correct order and without spaces as future input for the splat operator.
     cmd.insert(4, "-var cpus=#{cpus}") if cpus
