@@ -5,6 +5,7 @@ Bento is a project that encapsulates [Packer](https://www.packer.io/) templates 
 ***NOTE:**
 
 - Vagrant 2.4.0+ is required for new cpu architecture support
+- For `bento test` command to work test-kitchen and kitchen-vagrant gems must be installed
 - Virutalbox 6.x requires disabling nat config that allows vbox 7.x guests to connect to the host. To use comment out lines #161 and #162 in bento/packer_templates/pkr-variables.pkr.hcl or add variable `vboxmanage = []` to os_pkrvars files.
 - When running packer build command the output directory is relative to the working directory the command is currently running in. Suggest running packer build commands from bento root directory for build working files to be placed in bento/builds/(build_name) directory by default. If the output_directory variable isn't overwritten a directory called builds/(build_name) will be created in the current working directory that you are running the command from
 
@@ -144,13 +145,14 @@ If the build is successful, your box files will be in the `builds` directory at 
 
 ### KVM/qemu support for Windows
 
-You must download [the iso image with the Windows drivers for paravirtualized KVM/qemu hardware](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso). You can do this from the command line: `wget -nv -nc https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso -O virtio-win.iso` and place it in the packer_templates/win_answer_files/ directory.
+You must download [the iso image with the Windows drivers for paravirtualized KVM/qemu hardware](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso) and place it in the builds/iso/ directory.
+You can do this from the command line: `mkdir -p builds/iso/; wget -nv -nc https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso -O builds/iso/virtio-win.iso`
 
 You can use the following sample command to build a KVM/qemu Windows box:
 
 ```bash
 packer init -upgrade ./packer_templates
-packer build --only=qemu.vm -var-file=os_pkrvars/windwos/windows-2022-x86_64.pkrvars.hcl ./packer_templates
+packer build --only=qemu.vm -var-file=os_pkrvars/windows/windows-2022-x86_64.pkrvars.hcl ./packer_templates
 ```
 
 ### Proprietary Templates
