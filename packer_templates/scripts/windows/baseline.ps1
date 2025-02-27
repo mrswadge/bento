@@ -122,8 +122,11 @@ if ($osVersion.Version.Major -eq 6 -and $osVersion.Version.Minor -eq 3 -and $osV
     # Windows Server 2019
 } elseif ($osVersion.Version.Major -eq 10 -and $osVersion.Version.Minor -eq 0 -and $osVersion.Version.Build -eq 20348) {
     # Windows Server 2022
+} elseif ($osVersion.Version.Major -eq 10 -and $osVersion.Version.Minor -eq 0 -and $osVersion.Version.Build -eq 26100) {
+    # Windows Server 2025
 } else {
-    Write-Host "Unsupported Windows version: $($osVersion.Version.Major).$($osVersion.Version.Minor).$($osVersion.Version.Build)"
+    Write-Host "Unknown Windows version: $($osVersion.Version.Major).$($osVersion.Version.Minor).$($osVersion.Version.Build)"
+    Write-Host "Check baseline.ps1 to add support for a new version."
     Exit 1
 }
 
