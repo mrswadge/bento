@@ -2,6 +2,13 @@
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 pushd "$SCRIPTPATH"
 
+tstamp=$(date '+%Y%m%d')
+platform="windows"
+disk_size="131072"
+memory="4096"
+onerror="cleanup"
+vm_values=""
+
 mkdir -p ./tools
 if [ ! -f ./tools/jq.exe ]; then
   # Download and extract the latest version of jQ (windows 64) to ./tools
@@ -21,13 +28,6 @@ if [ ! -f ./tools/packer.exe ]; then
 else
   echo "Packer already exists in ./tools"
 fi
-
-tstamp=$(date '+%Y%m%d')
-platform="windows"
-disk_size="131072"
-memory="4096"
-onerror="cleanup"
-vm_values=""
 
 # Check for packer on the path.
 if ! which packer >/dev/null; then
