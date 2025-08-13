@@ -22,3 +22,5 @@ Berksfile.lock
 kitchen.yml
 *.metadata.json
 bento-*.gem
+
+tools/

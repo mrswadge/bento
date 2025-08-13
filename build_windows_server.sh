@@ -1,6 +1,27 @@
 #!/bin/bash
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 pushd "$SCRIPTPATH"
+
+mkdir -p ./tools
+if [ ! -f ./tools/jq.exe ]; then
+  # Download and extract the latest version of jQ (windows 64) to ./tools
+  curl -Ls "https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe" -o ./tools/jq.exe
+else
+  echo "jQ already exists in ./tools"
+fi
+
+# Download and extract the latest version of packer (windows 64) to ./tools
+# Fetch the latest Packer version from HashiCorp releases API
+# PACKER_LATEST_VERSION=$(curl -s https://api.releases.hashicorp.com/v1/releases/packer | ./tools/jq -r '.[].version' | sort -V | tail -n 1)
+if [ ! -f ./tools/packer.exe ]; then
+  PACKER_LATEST_VERSION=1.13.0
+  curl -Ls "https://releases.hashicorp.com/packer/${PACKER_LATEST_VERSION}/packer_${PACKER_LATEST_VERSION}_windows_amd64.zip" -o ./tools/packer.zip
+  unzip -o ./tools/packer.zip -d ./tools
+  rm ./tools/packer.zip
+else
+  echo "Packer already exists in ./tools"
+fi
+
 tstamp=$(date '+%Y%m%d')
 platform="windows"
 disk_size="131072"
@@ -10,7 +31,24 @@ vm_values=""
 
 # Check for packer on the path.
 if ! which packer >/dev/null; then
-  echo "Packer is not found on the PATH."
+  # Add ./tools to the PATH if it is not already there
+  if [[ ":$PATH:" != *":$SCRIPTPATH/tools:"* ]]; then
+    echo "Adding ./tools to PATH"
+    export PATH="$PATH:$SCRIPTPATH/tools"
+  fi
+fi
+
+# Add oscdimg to the PATH if it is not already there (C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\amd64\Oscdimg)
+# Install Windows ADK if not installed: https://learn.microsoft.com/en-us/windows-hardware/get-started/adk-install
+if ! which oscdimg >/dev/null; then
+  if [[ ":$PATH:" != *":/c/Program Files (x86)/Windows Kits/10/Assessment and Deployment Kit/Deployment Tools/amd64/Oscdimg:"* ]]; then
+    echo "Adding oscdimg to PATH"
+    export PATH="$PATH:/c/Program Files (x86)/Windows Kits/10/Assessment and Deployment Kit/Deployment Tools/amd64/Oscdimg"
+  fi
+  if ! which oscdimg >/dev/null; then
+    echo "oscdimg not found in PATH. Please install Windows ADK: https://learn.microsoft.com/en-us/windows-hardware/get-started/adk-install"
+    exit 1
+  fi
 fi
 
 # Function to print usage information and exit
@@ -67,7 +105,7 @@ for version in "${values[@]}"; do
   box_log="build-${platform}-${version}.log"
   box_basename="${platform}/${platform}-${version}-x86_64"
   echo "Building $box_basename with packer. You can follow the log in ${box_log}."
-  packer build -force -only=virtualbox-iso.vm "-on-error=${onerror}" -var-file="os_pkrvars/${box_basename}.pkrvars.hcl" -var "cpus=4" -var "memory=${memory}" -var "disk_size=${disk_size}" ./packer_templates > "${box_log}" 2>&1 &
+  ./tools/packer build -force -only=virtualbox-iso.vm "-on-error=${onerror}" -var-file="os_pkrvars/${box_basename}.pkrvars.hcl" -var "cpus=4" -var "memory=${memory}" -var "disk_size=${disk_size}" ./packer_templates > "${box_log}" 2>&1 &
 done
 
 wait
